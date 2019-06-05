@@ -1,0 +1,101 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+}
+
+.wrapper{
+    position: relative;
+    margin: 3% auto;
+    padding: 20px;
+    width: 980px;
+    border: 1px solid black;
+    background-color: #eee;
+}
+
+.forecast{
+    margin: 0 auto;
+    border: 1px solid black;
+    width: 900px;
+}
+
+.forecast .chart {  
+    position: relative; 
+    margin: 10px;
+    height: 300px;
+    border: 1px solid black;
+}
+
+.chart_div {
+    height: 300px;
+}
+
+.forecast .chart p{
+    position:relative;
+    width: 100px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: chocolate;
+    background-color: yellow;
+}
+
+.forecast .dataContainer{
+ display: flex;
+ margin: 10px;
+ min-height: 120px;
+ overflow-x: hidden;
+}
+
+.forecast .data {
+    flex-shrink: 0;    
+    width: 10%;
+    border: 1px solid black;
+    font-size: .8rem;
+    line-height: .8rem;
+}
+
+.forecast .data>div{
+    padding: 5px 5px 0;
+    min-height: 20px;  
+   text-align: center;
+}
+
+
+.arrowRight {
+    position: absolute;
+    right: 8px;
+    top: 460px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 40px 0 40px 25px;
+    border-color: transparent transparent transparent #69aaf0;
+}
+
+
+.arrowLeft {
+    position: absolute;
+    left: 8px;
+    top: 460px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 40px 25px 40px 0;
+    border-color: transparent #69aaf0 transparent transparent;
+}
+
+form.search input:last-child{
+    padding: 0 8px;
+    background-color: rgb(168, 202, 235);
+    outline: none;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+form.search input:last-child:hover{
+    background-color: rgb(129, 170, 211);
+    outline: none;
+    border: 1px solid black;
+    color: blue;
+}
