@@ -1,3 +1,6 @@
+<!-- prezentacja pogody 5-cio dniowej
+przygotowanie danych przekazywanych do skryptu JS generującego wykres -->
+
 <?php
 
 require_once("getDataFromApi.php");
@@ -68,8 +71,8 @@ class Forecast5days extends GetDataFromApi
                 echo "<div class='hour'>" . substr($date[1], 0, -3) . "</div>";
                 echo "<div class='icon'><img src='$imgSrc' alt='weather icon'></div>";
                 echo "<div class='temp'>$temp &deg;C</div>";
-                echo "<div class='wind'>$wind m/s</div>";
-                echo "<div class='pressure'>$pressure hpa</div>";
+                echo "<div class='wind'>", round($wind, 1), " m/s</div>";
+                echo "<div class='pressure'>", round($pressure, 1), " hpa</div>";
                 echo '<div class="date" style="background-color:' . $bgcColor . '">' . $date[0] . "</div>";
                 echo "</div>";
             }
