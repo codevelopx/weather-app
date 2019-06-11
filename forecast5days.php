@@ -1,54 +1,39 @@
 <?php
 
-class Forecast5days {
+require_once("getDataFromApi.php");
 
-    private $url='';
-    private $step='';
-    public $data;
+class Forecast5days extends GetDataFromApi
+{
+
+    private $step = '';
     public $dataTemp = array();
 
-    function __construct($url, $step){
-        $this->url = $url;
+    function __construct($url, $step)
+    {
+        parent::__construct($url);
         $this->step = $step;
     }
 
-    function loadData(){
-
-        $error = false;
-
-        set_error_handler(
-            function () {
-                throw new ErrorException("Nieprawidłowa nazwa miasta lub nie mogę połączyć się z API", 123);
-            }
-        );
-        
-        try {
-            $response  = file_get_contents($this->url);
-            $this->data  = json_decode($response, true);
-        }
-        catch (Exception $e) {
-            echo $e->getMessage();
-            $error = true;
-        }        
-        restore_error_handler(); 
-
-        return $error;      
+    function data()
+    {
+        return $this->data;
     }
 
-    function showForecast(){
+    function showForecast()
+    {
+        echo '<div class="header"><h1>';
+        echo "Weather and forecast in: ";
+        echo $this->data['city']['name'] . ", " . $this->data['city']['country'];
+        echo '</h1></div>';
 
-        echo "5-cio dniowa prognoza pogody dla:";
-        echo $this->data['city']['name'].",".$this->data['city']['country'];
-        echo "<br/><br/>";
 
         echo '<div class="forecast"><div class="chart"> <div id="chart_div"></div></div><div class="dataContainer">';
 
-        $imgSrc="http://openweathermap.org/img/w/";
-        //  $dataTemp = array();
-        $dataPrev='';
+        $imgSrc = "http://openweathermap.org/img/w/";
+        $dataPrev = '';
         $color = true;
 
-        foreach($this->data['list'] as $day => $value) { 
+        foreach ($this->data['list'] as $day => $value) {
             $array = array();
             $desc = $value['weather'][0]['description'];
             $temp = $value['main']['temp'];
@@ -57,51 +42,45 @@ class Forecast5days {
             $dt_txt = $value['dt_txt'];
             $iconCode = $value['weather'][0]['icon'];
 
-            $imgSrc="http://openweathermap.org/img/w/".$iconCode.".png";
+            $imgSrc = "http://openweathermap.org/img/w/" . $iconCode . ".png";
 
-            $date = explode(" ",$dt_txt);
+            $date = explode(" ", $dt_txt);
 
-        
-            if($day>=$this->step){
+            if ($day >= $this->step) {
 
-                if( $dataPrev == $date[0]){
-                    if($color)
-                    $bgcColor = "#B8C4CC";
-                    else 
-                    $bgcColor = "#A1ACB3";
-                }
-                else{
-                    $dataPrev = $date[0];
-                    if($color){
-                        $color=!$color;
+                if ($dataPrev == $date[0]) {
+                    if ($color)
+                        $bgcColor = "#B8C4CC";
+                    else
                         $bgcColor = "#A1ACB3";
-                    }
-                    else{
+                } else {
+                    $dataPrev = $date[0];
+                    if ($color) {
+                        $color = !$color;
+                        $bgcColor = "#A1ACB3";
+                    } else {
                         $bgcColor = "#B8C4CC";
                         $color = !$color;
                     }
-                    
-                }                
+                }
 
-            echo '<div class="data">';
-            echo "<div class='hour'>".substr($date[1],0,-3)."</div>";
-            echo "<div class='icon'><img src='$imgSrc' alt='weather icon'></div>";
-            echo "<div class='temp'>$temp &deg;C</div>";
-            echo "<div class='wind'>$wind m/s</div>";
-            echo "<div class='pressure'>$pressure hpa</div>";
-            echo '<div class="date" style="background-color:'.$bgcColor.'">'.$date[0]."</div>";
-            echo "</div>";
+                echo '<div class="data">';
+                echo "<div class='hour'>" . substr($date[1], 0, -3) . "</div>";
+                echo "<div class='icon'><img src='$imgSrc' alt='weather icon'></div>";
+                echo "<div class='temp'>$temp &deg;C</div>";
+                echo "<div class='wind'>$wind m/s</div>";
+                echo "<div class='pressure'>$pressure hpa</div>";
+                echo '<div class="date" style="background-color:' . $bgcColor . '">' . $date[0] . "</div>";
+                echo "</div>";
             }
-            
-            $this->dataTemp[] =  array(substr($date[1],0,-3),$temp);
+
+            $this->dataTemp[] =  array(substr($date[1], 0, -3), $temp);
         }
-        echo '</div></div>'; 
+        echo '</div></div>';
     }
 
-    function dataPoints(){
+    function dataPoints()
+    {
         return array_slice($this->dataTemp, $this->step, 10);
     }
-
 }
-
-?>
