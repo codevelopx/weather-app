@@ -1,7 +1,7 @@
 <!-- prezentacja aktualnej pogody -->
 
 <?php
-require_once("GetDataFromApi.php");
+require_once("getDataFromApi.php");
 
 class CurrentWeatherData  extends GetDataFromApi
 {
