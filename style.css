@@ -8,15 +8,19 @@
 
 .container {
     display:flex;
-    margin: 2% auto;
-    border: 1px solid black; 
-    width: 1260px; 
-    justify-content: space-between; 
+    flex-wrap: wrap;
+    margin: 0 auto;
+    width: 95%;
+    max-width: 1260px; 
+    justify-content: flex-end; 
+
 }
 
 .currentWeather {
-    width: 100%;
-    margin: 50px 10px 0 10px;
+    width: 20%;
+    min-width: 260px;
+    margin: 50px 10px 0 0;
+    padding-left: 10px;
 }
 
 
@@ -31,7 +35,7 @@
 .wrapperForecast{
     position: relative;
     padding: 20px;
-    width: 980px;
+    width: 70%;
     background-color: #eee;
 }
 
@@ -43,6 +47,7 @@
 }
 
 .chart_div {
+    width: 100%;
     height: 300px;
 }
 
@@ -101,6 +106,11 @@
     border-color: transparent #69aaf0 transparent transparent;
 }
 
+.search {
+    margin: 5px auto;
+    width: 300px;
+}
+
 form.search input:first-child{
     outline: none;
     padding-left: 5px;
@@ -120,6 +130,7 @@ form.search input:first-child:focus{
 
 form.search input:last-child{
     padding: 0 8px;
+    /* background: url(search.png) 5px center no-repeat brown; */
     background-color: brown;
     outline: none;
     border: 2px solid brown;
@@ -174,6 +185,7 @@ table, th, td {
 }
 
 .myForecastTable {
+    width: 70%;
     font-family: 'Roboto', sans-serif;
     font-size: 0.9rem;
 }
@@ -193,3 +205,38 @@ table, th, td {
 .myForecastTable .temp:first-child{
     background-color: rgb(228, 172, 53);
 }
+
+.alert {
+    position: relative;
+    display: none;
+    width: 100%;
+    height: 100vh;
+}
+.alert p{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}
+
+@media (max-width: 960px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .currentWeather, .wrapperForecast, .myForecastTable  {
+        width: 100%;
+    }
+}
+
+  @media (max-width: 599px) {
+    .container, .search {
+        display: none;
+    }
+
+    .alert {
+        display: block;
+    }
+
+
+  }
