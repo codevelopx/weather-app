@@ -86,7 +86,7 @@
 .arrowRight {
     position: absolute;
     right: 3px;
-    top: 455px;
+    top: 430px;
     width: 0;
     height: 0;
     border-style: solid;
@@ -98,7 +98,7 @@
 .arrowLeft {
     position: absolute;
     left: 3px;
-    top: 455px;
+    top: 430px;
     width: 0;
     height: 0;
     border-style: solid;
