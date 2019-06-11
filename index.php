@@ -17,11 +17,11 @@
 
 
     <?php
-    // date_default_timezone_set("UTC");
-
     require_once("forecast5days.php");
     require_once("currentWeatherData.php");
     require_once("myForecast.php");
+
+    //sprawdzenie czy nazwa miasta byla już wpisana, a jak nie to  ustawienie na domyślne. Pobranie parametru $step do przewijania poziomego wykresu
 
     if (isset($_GET["city"])) {
         $city = $_GET["city"];
@@ -43,35 +43,47 @@
         $step = 0;
     }
     ?>
+    <!-- formularz podania nazwy miasta -->
+    <div class="search">
+        <form method="get" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" class="search">
+            <input type="text" name="city" placeholder="City..." value="<?php echo $city; ?>">
+            <input type="submit" value="ok">
+        </form>
+    </div>
 
     <div class="container">
 
+        <!-- połączenie z api oraz wyświetlanie aktualnej pogody dla wybranego miasta -->
         <?php
         $url = "https://api.openweathermap.org/data/2.5/weather?q=$city&units=metric&APPID=96993feca341f53ea0847433eae53af5";
         $currentWeatherData = new CurrentWeatherData($url);
+        if ($currentWeatherData->loadData()) {
+            echo $currentWeatherData->loadData();
+            return 0;
+        }
+
         $currentWeatherData->showCurrrentWeather();
 
         ?>
 
 
         <div class="wrapperForecast">
-            <div class="search">
-                <form method="get" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" class="search">
-                    <input type="text" name="city" placeholder="City..." value="<?php echo $city; ?>">
-                    <input type="submit" value="ok">
-                </form>
-            </div>
+
+            <!-- połączenie z api oraz wyświetlenie 5 dniowej prognozy pogody w cyklach 3 godzinnych -->
 
             <?php
 
             $url1 = "https://api.openweathermap.org/data/2.5/forecast?q=$city&units=metric&APPID=96993feca341f53ea0847433eae53af5";
 
             $forecast5days = new Forecast5days($url1, $step);
-            // if($forecast5days->loadData())
-            //  return 0;
+            // if ($forecast5days->loadData())
+            //     return 0;
             $forecast5days->showForecast();
+
+            //dane potrzebne do przekazanie dla skryptu JS w celu wygenerowania wykresu
             $dataPoints = $forecast5days->dataPoints();
 
+            // strzałki do przewijania prognozy do przodu lub do tyłu
             if ($step > 0) {
                 echo '<a href="' . $_SERVER['PHP_SELF'] . '?city=' . $city . '&step=' . ($step - 1) . '"><div class="arrowLeft"></div></a>';
             }
@@ -82,21 +94,25 @@
 
             ?>
         </div>
+        <?php
+        //wygenerowanie własnych danych na podstawie obróbki danych otrzymanych z api - prognoza 5-dniowa co 3 godziny
+        $myForecast = new myForecast($currentWeatherData->sunRiseSet(), $forecast5days->data());
+
+        $dataTime = $myForecast->dataTime();
+        $myForecast->startDayHour();
+        $myForecast->endDayHour();
+        $myForecast->myForecastData();
+        $myForecast->showMyForecast();
+
+        ?>
+
     </div>
 
-    <?php
-    $myForecast = new myForecast($currentWeatherData->sunRiseSet(), $forecast5days->data());
+    <div class="alert">
+        <p>Minimalna rozdzielczość dla strony to 600px</p>
+    </div>
 
-    echo '<br>';
-    $dataTime = $myForecast->dataTime();
-    print_r($dataTime);
-    $myForecast->startDayHour();
-    $myForecast->endDayHour();
-    $myForecast->myForecastData();
-    $myForecast->showMyForecast();
-
-    ?>
-
+    <!-- skrypt do wygenerowania wykresu, odświeżany po zmianie wielkości okna -->
     <script>
         google.charts.load('current', {
             packages: ['corechart', 'line']
@@ -138,9 +154,16 @@
 
                 backgroundColor: '#f1f8e9'
             };
-
             var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
             chart.draw(data, options);
+
+            function resize() {
+                var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+                chart.draw(data, options);
+            }
+
+            window.onload = resize;
+            window.onresize = resize;
         }
     </script>
 
