@@ -135,7 +135,7 @@ class MyForecast
                         array_splice($tempNight, 0);
                     }
 
-                    array_push($this->dateMyForecast, date('Y-m-d', $value['dt']));
+                    array_push($this->dateMyForecast, date('D j M', $value['dt']));
 
                     $prevData = date('Y-m-d', $value['dt']);
 
